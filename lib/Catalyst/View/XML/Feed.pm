@@ -4,7 +4,7 @@ extends 'Catalyst::View';
 use XML::Feed;
 use namespace::autoclean;
 
-our $VERSION = 0.02;
+our $VERSION = 0.03;
 
 has default_format => (
     is       => 'ro',
@@ -259,6 +259,8 @@ L<xml string|/"Plain text">.
       ],
   };
 
+=over 4
+
 =item Keys for feed
 
 The C<feed> hash can take any of the following keys.  They are identical
@@ -348,6 +350,8 @@ This should be a L<DateTime> object.
 =item author
 
 =back 
+
+=back
 
 =head2 Arbitrary custom objects
 
