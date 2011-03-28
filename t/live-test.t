@@ -18,8 +18,6 @@ my $mech = Test::WWW::Mechanize::Catalyst->new;
 $mech->get_ok('http://localhost/', 'get main page');
 $mech->content_like(qr/it works/i, 'main page has our text');
 
-$mech->get_ok("http://localhost/no_feed", "get /no_feed");
-$mech->content_is('', '/no_feed returns nothing');
 
 subtest 'custom_formats' => sub {
     for my $action (qw(

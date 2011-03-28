@@ -35,11 +35,6 @@ sub index : Path  {
     $ctx->res->body('<h1>It works</h1>');
 }
 
-sub no_feed : Local {
-    my ($self, $c) = @_;
-    $c->forward('View::Feed');
-}
-
 sub string : Local {
     my ($self, $c) = @_;
     $c->stash->{feed} = q{<?xml version="1.0" encoding="UTF-8"?>

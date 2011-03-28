@@ -27,5 +27,5 @@ requires:
   namespace::autoclean: 0
 resources:
   license: http://dev.perl.org/licenses/
-  repository: git://github.com/mstratman/Catalyst-View-XML-Feed.git
-version: 0.01
+  repository: https://github.com/mstratman/Catalyst-View-XML-Feed
+version: 0.02
