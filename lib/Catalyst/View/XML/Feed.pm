@@ -2,9 +2,10 @@ package Catalyst::View::XML::Feed;
 use Moose;
 extends 'Catalyst::View';
 use XML::Feed;
+use Scalar::Util ();
 use namespace::autoclean;
 
-our $VERSION = 0.03;
+our $VERSION = 0.04;
 
 has default_format => (
     is       => 'ro',
@@ -84,7 +85,7 @@ sub _make_feed_recognizable {
         return $feed;
 
     # Common Atom/RSS module? pass through
-    } elsif (UNIVERSAL::can($feed, 'isa')) {
+    } elsif (Scalar::Util::blessed($feed)) {
         for my $module (('XML::Feed', 'XML::RSS', 'XML::Atom::SimpleFeed',
                          'XML::Atom::Feed', 'XML::Atom::Syndication::Feed'))
         {
@@ -94,9 +95,11 @@ sub _make_feed_recognizable {
         }
     }
 
+    return $feed unless Scalar::Util::blessed($feed) || ref $feed eq 'HASH';
+
     # Otherwise, let's convert it to an XML::Feed.
 
-    my $format = UNIVERSAL::can($feed, 'format')
+    my $format = Scalar::Util::blessed($feed) && $feed->can('format')
         ? $feed->format
         : (defined $feed->{format} ? $feed->{format} : $self->default_format);
     my @format;
@@ -118,7 +121,7 @@ sub _make_feed_recognizable {
 
     my @entries;
     # Set feed attributes, get entries.
-    if (UNIVERSAL::can($feed, 'isa')) {
+    if (Scalar::Util::blessed($feed)) {
         for my $key (@{ $self->xml_feed_attributes }) {
             if ($feed->can($key)) {
                 $xf_feed->$key( $feed->$key() );
@@ -127,7 +130,7 @@ sub _make_feed_recognizable {
         if ($feed->can('entries')) {
             # Allow for feed->entries to return either array or arrayref.
             @entries = ($feed->entries);
-            if (scalar(@entries) == 1 && ref($entries[0]) eq 'ARRAY' && ! UNIVERSAL::can($entries[0], 'isa')) {
+            if (scalar(@entries) == 1 && ref($entries[0]) eq 'ARRAY' && ! Scalar::Util::blessed($entries[0])) {
                 @entries = @{ $entries[0] };
             }
         }
@@ -144,9 +147,9 @@ sub _make_feed_recognizable {
 
     # Create the entries.
     for my $entry (@entries) {
-        my $xf_entry = XML::Feed::Entry->new();
+        my $xf_entry = XML::Feed::Entry->new($format[0]);
 
-        if (UNIVERSAL::can($entry, 'isa')) {
+        if (Scalar::Util::blessed($entry)) {
             for my $key (@{ $self->xml_feed_entry_attributes }) {
                 if ($entry->can($key)) {
                     $xf_entry->$key( $entry->$key() );
@@ -199,8 +202,6 @@ sub _content_type_for_feed {
         return 'text/xml';
     }
 }
-
-1;
 
 =head1 NAME
 
@@ -439,3 +440,5 @@ This sofware is free software, and is licensed under the same terms as perl itse
 
 =cut
 
+__PACKAGE__->meta->make_immutable;
+1;
