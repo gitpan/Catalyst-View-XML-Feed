@@ -5,7 +5,7 @@ use XML::Feed;
 use Scalar::Util ();
 use namespace::autoclean;
 
-our $VERSION = 0.04;
+our $VERSION = 0.05;
 
 has default_format => (
     is       => 'ro',
@@ -431,6 +431,10 @@ L<http://github.com/mstratman/Catalyst-View-XML-Feed>
 =head1 AUTHOR
 
 Mark A. Stratman E<lt>stratman@gmail.comE<gt>
+
+=head1 CONTRIBUTORS
+
+Thomas Doran (t0m)
 
 =head1 COPYRIGHT & LICENSE
 
